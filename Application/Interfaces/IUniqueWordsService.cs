@@ -1,7 +1,8 @@
 ﻿namespace UniqueWords.Application.Interfaces
 {
-    using System.Threading.Tasks;
     using Models;
+
+    using System.Threading.Tasks;
 
     public interface IUniqueWordsService
     {

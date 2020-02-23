@@ -2,6 +2,7 @@
 {
     using Application.Interfaces;
     using Application.UniqueWords;
+
     using Microsoft.Extensions.DependencyInjection;
 
     public static class DependencyInjectionExtensions

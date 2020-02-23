@@ -1,10 +1,13 @@
 ﻿namespace UniqueWords.WebApp.Controllers
 {
+    using Application.Interfaces;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using Models;
+
     using System.Net.Mime;
     using System.Threading.Tasks;
-    using Application.Interfaces;
-    using Microsoft.AspNetCore.Mvc;
-    using Models;
 
     public class TextController : WebApiControllerBase
     {

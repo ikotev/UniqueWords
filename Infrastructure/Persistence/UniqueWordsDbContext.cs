@@ -1,10 +1,15 @@
 ﻿namespace UniqueWords.Infrastructure.Persistence
 {
-    using System.Collections.Concurrent;
-    using System.Reflection;
     using Application.Interfaces;
+
     using Domain.Entities;
+
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Storage;
+
+    using System.Data;
+    using System.Reflection;
+    using System.Threading.Tasks;
 
     public class UniqueWordsDbContext : DbContext, IUniqueWordsDbContext
     {
@@ -22,6 +27,11 @@
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(builder);
+        }
+
+        public Task<IDbContextTransaction> BeginTransactionAsync(IsolationLevel isolationLevel)
+        {
+            return base.Database.BeginTransactionAsync(IsolationLevel.Serializable);
         }
     }
 }

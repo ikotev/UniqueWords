@@ -1,9 +1,11 @@
 ﻿namespace UniqueWords.Infrastructure.Persistence.Configs
 {
-    using System.Collections.Generic;
     using Domain.Entities;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+    using System.Collections.Generic;
 
     public class WatchWordItemConfig : IEntityTypeConfiguration<WatchWordItem>
     {

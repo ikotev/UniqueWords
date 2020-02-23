@@ -1,8 +1,8 @@
 ﻿namespace UniqueWords.WebApp.Controllers
 {
-    using System.Net.Mime;
     using Microsoft.AspNetCore.Mvc;
-    using StartupConfigs;
+
+    using System.Net.Mime;
 
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]

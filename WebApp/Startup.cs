@@ -9,6 +9,7 @@ namespace UniqueWords.WebApp
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+
     using StartupConfigs;
 
     public class Startup

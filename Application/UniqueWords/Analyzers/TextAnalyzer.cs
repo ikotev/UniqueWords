@@ -1,7 +1,8 @@
 ﻿namespace UniqueWords.Application.UniqueWords
 {
-    using System.Collections.Generic;
     using Interfaces;
+
+    using System.Collections.Generic;
 
     public abstract class TextAnalyzer : ITextAnalyzer
     {
