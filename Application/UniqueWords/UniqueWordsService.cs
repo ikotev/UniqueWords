@@ -10,17 +10,22 @@
     using Models;
 
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Data;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public class UniqueWordsService : IUniqueWordsService
     {
         private readonly IUniqueWordsDbContextFactory _contextFactory;
         private readonly ITextAnalyzer _textAnalyzer;
+        private readonly Lazy<ConcurrentBag<string>> _watchListLazy;
         private readonly ILogger<UniqueWordsService> _logger;
+
+        private ConcurrentBag<string> _watchList => _watchListLazy.Value;
 
         public UniqueWordsService(
             IUniqueWordsDbContextFactory contextFactory,
@@ -30,6 +35,8 @@
             _contextFactory = contextFactory;
             _textAnalyzer = textAnalyzer;
             _logger = logger;
+
+            _watchListLazy = new Lazy<ConcurrentBag<string>>(WatchListFactory, LazyThreadSafetyMode.ExecutionAndPublication);
         }
 
         public async Task<ProcessedTextResult> ProcessTextAsync(string text)
@@ -54,14 +61,13 @@
         {
             var tokens = _textAnalyzer.GetTokens(text);
             var distinctTokens = tokens.Distinct().ToList();
-            List<string> watchListMatches;
-
+            
             using (var db = _contextFactory.CreateDbContext())
             {
                 await AddNewWordsAsync(db, distinctTokens);
-
-                watchListMatches = await FindWatchListMatchesAsync(db, distinctTokens);
             }
+
+            var watchListMatches = FindWatchListMatches(distinctTokens);
 
             var result = new ProcessedTextResult
             {
@@ -111,17 +117,23 @@
             return newWords;
         }
 
-        private async Task<List<string>> FindWatchListMatchesAsync(IUniqueWordsDbContext db, IEnumerable<string> tokens)
+        private List<string> FindWatchListMatches(IEnumerable<string> tokens)
         {
-            var watchListQuery = from wl in db.WatchList
-                                 where tokens.Contains(wl.Word)
-                                 select wl.Word;
+            return _watchList.Intersect(tokens).ToList();
+        }
 
-            var watchListMatches = await watchListQuery
-                .AsNoTracking()
-                .ToListAsync();
+        private ConcurrentBag<string> WatchListFactory()
+        {
+            using (var db = _contextFactory.CreateDbContext())
+            {
+                var watchListQuery = from wl in db.WatchList
+                                     select wl.Word;
 
-            return watchListMatches;
+                var watchList = watchListQuery
+                    .AsNoTracking();
+
+                return new ConcurrentBag<string>(watchList);
+            }
         }
     }
 }
