@@ -5,3 +5,5 @@ Update-Database
 #Set Environment
 $env:ASPNETCORE_ENVIRONMENT="dev"
 
+#VS Code
+dotnet ef database update -v -p Infrastructure -s WebApp
