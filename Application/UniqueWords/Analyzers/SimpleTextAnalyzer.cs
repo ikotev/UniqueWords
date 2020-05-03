@@ -8,24 +8,21 @@
     public class SimpleTextAnalyzer : TextAnalyzer
     {
         protected override string FilterChars(string text)
-        {
-            var charFilters = new[] { '.', ',', ';' };
+        {                        
             var sb = new StringBuilder(text.Length);
-            
+
             foreach (var c in text)
             {
-                if (Array.IndexOf(charFilters, c) > -1)
-                    continue;
-
-                sb.Append(c);
+                if (!char.IsPunctuation(c))
+                    sb.Append(c);
             }
 
-            return  sb.ToString();
+            return sb.ToString();
         }
 
         protected override IEnumerable<string> TokenizeText(string text)
         {
-            var tokens = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var tokens = text.Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
             return tokens;
         }
 
