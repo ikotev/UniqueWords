@@ -7,5 +7,7 @@
     public interface IUniqueWordsService
     {
         Task<ProcessedTextResult> ProcessTextAsync(string text);
+
+        Task<ProcessedTextResult> ProcessTextV2Async(string text);
     }
 }

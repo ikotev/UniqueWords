@@ -22,7 +22,7 @@
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostText([FromBody] string text)
         {
-            var result = await _uniqueWordsService.ProcessTextAsync(text);
+            var result = await _uniqueWordsService.ProcessTextV2Async(text);
 
             return new TextResultModel
             {

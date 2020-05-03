@@ -13,6 +13,7 @@
     using System.Collections.Generic;
     using System.Collections.Immutable;
     using System.Data;
+    using System.Data.SqlClient;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -49,6 +50,69 @@
                 throw;
             }
         }
+
+        public async Task<ProcessedTextResult> ProcessTextV2Async(string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                throw new ArgumentException(nameof(text));
+            }
+
+            try
+            {
+                return await AnalyzeTextTokensV2Async(text);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "An error occurred while processing text.");
+                throw;
+            }
+        }
+
+        private async Task<ProcessedTextResult> AnalyzeTextTokensV2Async(string text)
+        {
+            var tokens = _textAnalyzer.GetTokens(text);
+            var distinctTokens = tokens.Distinct().ToList();
+            List<string> watchListMatches;
+
+            using (var db = _contextFactory.CreateDbContext())
+            {
+                await AddNewWordsV2Async(db, distinctTokens);
+
+                watchListMatches = await FindWatchListMatchesAsync(db, distinctTokens);
+            }
+
+            var result = new ProcessedTextResult
+            {
+                DistinctUniqueWords = distinctTokens.Count,
+                WatchlistWords = watchListMatches
+            };
+
+            return result;
+        }
+
+        private async Task AddNewWordsV2Async(IUniqueWordsDbContext db, List<string> words)
+        {
+            var table = new DataTable();
+            table.Columns.Add("RowId", typeof(int));
+            table.Columns.Add("Word", typeof(string));
+
+            for (int i = 0; i < words.Count; i++)
+            {
+                table.Rows.Add(i + 1, words[i]);
+            }
+
+            var parameter = new SqlParameter("@Words", SqlDbType.Structured);
+            parameter.Value = table;
+            parameter.TypeName = "[dbo].[AddNewWordsInput]";
+            var response = await db.AddNewWords
+            .FromSql("EXEC dbo.AddNewWords @Words", parameter)
+            .ToListAsync();
+
+
+            var n = response.Count;
+        }
+
 
         private async Task<ProcessedTextResult> AnalyzeTextTokensAsync(string text)
         {

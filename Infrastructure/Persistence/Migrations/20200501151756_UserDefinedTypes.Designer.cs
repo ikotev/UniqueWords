@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniqueWords.Infrastructure.Persistence;
 
 namespace UniqueWords.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(UniqueWordsDbContext))]
-    partial class UniqueWordsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200501151756_UserDefinedTypes")]
+    partial class UserDefinedTypes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
