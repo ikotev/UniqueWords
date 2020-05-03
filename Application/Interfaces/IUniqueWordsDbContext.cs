@@ -17,7 +17,7 @@
 
         DbSet<WatchWordItem> WatchList { get; set; }
 
-        DbSet<AddNewWordsOutput> AddNewWords { get; set; }
+        DbQuery<AddNewWordsOutput> AddNewWords { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 

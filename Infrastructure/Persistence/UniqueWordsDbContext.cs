@@ -14,23 +14,19 @@
 
     public class UniqueWordsDbContext : DbContext, IUniqueWordsDbContext
     {
-        public UniqueWordsDbContext(DbContextOptions<UniqueWordsDbContext> options) : base(options)
-        {
-
-        }
+        public UniqueWordsDbContext(DbContextOptions<UniqueWordsDbContext> options)
+        : base(options)
+        { }
 
         public DbSet<WordItem> Words { get; set; }
 
-        public DbSet<WatchWordItem> WatchList { get; set; }      
+        public DbSet<WatchWordItem> WatchList { get; set; }
 
-        public DbSet<AddNewWordsOutput> AddNewWords { get; set; }        
+        public DbQuery<AddNewWordsOutput> AddNewWords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
-        {            
-            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-            builder.Entity<AddNewWordsOutput>(e => e.HasKey("RowId"));
-            //builder.Ignore<AddNewWordsOutput>();
+        {
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());            
 
             base.OnModelCreating(builder);
         }
