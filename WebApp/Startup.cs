@@ -11,6 +11,8 @@ namespace UniqueWords.WebApp
     using Microsoft.Extensions.DependencyInjection;
 
     using StartupConfigs;
+    using UniqueWords.Application;
+    using UniqueWords.Infrastructure;
 
     public class Startup
     {
@@ -23,12 +25,15 @@ namespace UniqueWords.WebApp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbServices(Configuration);
+            services.AddApplication();
+            services.AddInfrastructure(Configuration);
+
             services.AddCorsServices();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddDependencies();
+            services.AddDependencies(Configuration);
 
             services.AddSwaggerServices();
         }
@@ -46,7 +51,7 @@ namespace UniqueWords.WebApp
 
             app.UseCorsServices();
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
             app.UseSwaggerServices();
 

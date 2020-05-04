@@ -1,7 +1,5 @@
 ﻿namespace UniqueWords.Infrastructure.Persistence
-{
-    using Application.Interfaces;
-
+{    
     using Domain.Entities;
 
     using Microsoft.EntityFrameworkCore;
@@ -12,7 +10,7 @@
     using System.Threading.Tasks;
     using UniqueWords.Application.Models;
 
-    public class UniqueWordsDbContext : DbContext, IUniqueWordsDbContext
+    public class UniqueWordsDbContext : DbContext
     {
         public UniqueWordsDbContext(DbContextOptions<UniqueWordsDbContext> options)
         : base(options)

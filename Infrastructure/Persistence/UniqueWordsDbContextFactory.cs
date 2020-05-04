@@ -1,30 +1,19 @@
-﻿namespace UniqueWords.Infrastructure.Persistence
+using Microsoft.EntityFrameworkCore;
+
+namespace UniqueWords.Infrastructure.Persistence
 {
-    using Application.Interfaces;
-
-    using Microsoft.EntityFrameworkCore;
-
-    public class UniqueWordsDbContextFactory : IUniqueWordsDbContextFactory
+    public class UniqueWordsDbContextFactory: IDbContextFactory<UniqueWordsDbContext>
     {
-        private readonly string _connectionString;
+        private readonly DbContextOptions<UniqueWordsDbContext> _options;
 
-        public UniqueWordsDbContextFactory(string connectionString)
+        public UniqueWordsDbContextFactory(DbContextOptions<UniqueWordsDbContext> options)
         {
-            _connectionString = connectionString;
+            _options = options;
         }
 
-        public IUniqueWordsDbContext CreateDbContext()
+        public UniqueWordsDbContext Create()
         {
-            return new UniqueWordsDbContext(GetDbContextOptions(_connectionString));
-        }
-
-        private static DbContextOptions<UniqueWordsDbContext> GetDbContextOptions(string connectionString)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<UniqueWordsDbContext>();
-
-            optionsBuilder.UseSqlServer(connectionString);
-
-            return optionsBuilder.Options;
-        }
-    }
+            return new UniqueWordsDbContext(_options);
+        }        
+    }    
 }

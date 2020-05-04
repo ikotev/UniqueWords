@@ -1,17 +1,12 @@
-﻿namespace UniqueWords.WebApp.StartupConfigs
+namespace UniqueWords.WebApp.StartupConfigs
 {
-    using Application.Interfaces;
-    using Application.UniqueWords;
-
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     public static class DependencyInjectionExtensions
     {
-        public static IServiceCollection AddDependencies(this IServiceCollection services)
-        {
-            services.AddSingleton<ITextAnalyzer, SimpleTextAnalyzer>();
-            services.AddScoped<IUniqueWordsService, UniqueWordsService>();
-
+        public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
+        {            
             return services;
         }
     }

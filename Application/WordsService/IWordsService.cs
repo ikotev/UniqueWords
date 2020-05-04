@@ -1,10 +1,10 @@
-﻿namespace UniqueWords.Application.Interfaces
+﻿namespace UniqueWords.Application.Words
 {
     using Models;
 
     using System.Threading.Tasks;
 
-    public interface IUniqueWordsService
+    public interface IWordsService
     {
         Task<ProcessedTextResult> ProcessTextAsync(string text);
 

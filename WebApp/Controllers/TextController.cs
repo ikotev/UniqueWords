@@ -1,28 +1,27 @@
 ﻿namespace UniqueWords.WebApp.Controllers
 {
-    using Application.Interfaces;
-
     using Microsoft.AspNetCore.Mvc;
 
     using Models;
 
     using System.Net.Mime;
     using System.Threading.Tasks;
+    using UniqueWords.Application.Words;
 
     public class TextController : WebApiControllerBase
     {
-        private readonly IUniqueWordsService _uniqueWordsService;
+        private readonly IWordsService _wordsService;
 
-        public TextController(IUniqueWordsService uniqueWordsService)
+        public TextController(IWordsService wordsService)
         {
-            _uniqueWordsService = uniqueWordsService;
+            _wordsService = wordsService;
         }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostText([FromBody] string text)
         {
-            var result = await _uniqueWordsService.ProcessTextV2Async(text);
+            var result = await _wordsService.ProcessTextV2Async(text);
 
             return new TextResultModel
             {

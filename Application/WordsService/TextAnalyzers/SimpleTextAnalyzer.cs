@@ -1,11 +1,11 @@
-﻿namespace UniqueWords.Application.UniqueWords
+﻿namespace UniqueWords.Application.Words.TextAnalyzers
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
 
-    public class SimpleTextAnalyzer : TextAnalyzer
+    public class SimpleTextAnalyzer : BaseTextAnalyzer
     {
         protected override string FilterChars(string text)
         {                        

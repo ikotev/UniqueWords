@@ -1,10 +1,8 @@
-﻿namespace UniqueWords.Application.UniqueWords
+﻿namespace UniqueWords.Application.Words.TextAnalyzers
 {
-    using Interfaces;
-
     using System.Collections.Generic;
 
-    public abstract class TextAnalyzer : ITextAnalyzer
+    public abstract class BaseTextAnalyzer : ITextAnalyzer
     {
         public IEnumerable<string> GetTokens(string text)
         {
