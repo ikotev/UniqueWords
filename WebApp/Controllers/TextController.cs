@@ -21,7 +21,7 @@
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostText([FromBody] string text)
         {
-            var result = await _wordsService.ProcessTextV2Async(text);
+            var result = await _wordsService.ProcessTextAsync(text);
 
             return new TextResultModel
             {
