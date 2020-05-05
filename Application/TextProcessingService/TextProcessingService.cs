@@ -47,30 +47,37 @@
         private async Task<ProcessedTextResult> AnalyzeTextTokensAsync(string text)
         {
             int uniqueWordsCount;
-            List<WatchWordItem> watchWords;
-            
+            List<string> watchWords;
+
             var distinctTokens = GetDistinctTokens(text);
 
             using (var db = _dataContextFactory.Create())
             {
                 var uniqueWords = await db.WordsRepository.AddNewWordsAsync(distinctTokens);
-                watchWords = await db.WatchListRepository.FindAsync(distinctTokens);
+                watchWords = await FindWatchWordMatchesAsync(db.WatchWordsRepository, distinctTokens); 
 
                 uniqueWordsCount = uniqueWords.Count;
             }
-
-            var watchWordsList = watchWords
-                .Select(ww => ww.Word)
-                .ToList();
-
+           
             var result = new ProcessedTextResult
             {
                 DistinctWords = distinctTokens.Count,
                 DistinctUniqueWords = uniqueWordsCount,
-                WatchlistWords = watchWordsList
+                WatchlistWords = watchWords
             };
 
             return result;
+        }
+
+
+        private async Task<List<string>> FindWatchWordMatchesAsync(IWatchWordsRepository watchWordsRepository, List<string> words)
+        {
+            var matches = await watchWordsRepository.FindAsync(words);
+            var wordMatches = matches
+                .Select(ww => ww.Word)
+                .ToList();
+
+            return wordMatches;
         }
 
         private List<string> GetDistinctTokens(string text)

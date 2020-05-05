@@ -6,6 +6,6 @@ namespace UniqueWords.Application.Words
     {
         IWordsRepository WordsRepository { get; }
 
-        IWatchWordsRepository WatchListRepository { get; }
+        IWatchWordsRepository WatchWordsRepository { get; }
     }
 }

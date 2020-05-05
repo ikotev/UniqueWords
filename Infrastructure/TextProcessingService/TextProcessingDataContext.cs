@@ -7,13 +7,13 @@ namespace UniqueWords.Infrastructure.TextProcessing
     {
         public IWordsRepository WordsRepository { get; }
 
-        public IWatchWordsRepository WatchListRepository { get; }
+        public IWatchWordsRepository WatchWordsRepository { get; }
 
         public TextProcessingDataContext(IDbContextFactory<UniqueWordsDbContext> dbContextFactory)
         : base(dbContextFactory)
         {
             WordsRepository = new WordsRepository(DbContext);
-            WatchListRepository = new WatchWordsRepository(DbContext);
+            WatchWordsRepository = new WatchWordsRepository(DbContext);
         }
     }
 }
