@@ -1,6 +1,6 @@
 namespace UniqueWords.Application.Words
 {
-    public interface IWordsDataContextFactory
+    public interface ITextProcessingDataContextFactory
     {        
         IWordsDataContext Create();
     }

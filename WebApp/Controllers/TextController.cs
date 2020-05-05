@@ -10,18 +10,18 @@
 
     public class TextController : WebApiControllerBase
     {
-        private readonly IWordsService _wordsService;
+        private readonly ITextProcessingService _textProcessingService;
 
-        public TextController(IWordsService wordsService)
+        public TextController(ITextProcessingService textProcessingService)
         {
-            _wordsService = wordsService;
+            _textProcessingService = textProcessingService;
         }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostText([FromBody] string text)
         {
-            var result = await _wordsService.ProcessTextAsync(text);
+            var result = await _textProcessingService.ProcessTextAsync(text);
 
             return new TextResultModel
             {

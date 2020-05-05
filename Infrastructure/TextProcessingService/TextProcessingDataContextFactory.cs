@@ -1,20 +1,20 @@
 using UniqueWords.Application.Words;
 using UniqueWords.Infrastructure.Persistence;
 
-namespace UniqueWords.Infrastructure.Words
+namespace UniqueWords.Infrastructure.TextProcessing
 {
-    public class WordsDataContextFactory : IWordsDataContextFactory
+    public class TextProcessingDataContextFactory : ITextProcessingDataContextFactory
     {
         private readonly IDbContextFactory<UniqueWordsDbContext> _dbContextFactory;
 
-        public WordsDataContextFactory(IDbContextFactory<UniqueWordsDbContext> dbContextFactory)
+        public TextProcessingDataContextFactory(IDbContextFactory<UniqueWordsDbContext> dbContextFactory)
         {
             _dbContextFactory = dbContextFactory;
         }
 
         public IWordsDataContext Create()
         {
-            return new WordsDataContext(_dbContextFactory);
+            return new TextProcessingDataContext(_dbContextFactory);
         }
     }
 }

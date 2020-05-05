@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using UniqueWords.Domain.Entities;
 
-namespace UniqueWords.Infrastructure.Words
+namespace UniqueWords.Infrastructure.TextProcessing
 {
     public class WatchWordsRepository : IWatchWordsRepository
     {

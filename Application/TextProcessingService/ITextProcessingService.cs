@@ -4,7 +4,7 @@
 
     using System.Threading.Tasks;
 
-    public interface IWordsService
+    public interface ITextProcessingService
     {        
         Task<ProcessedTextResult> ProcessTextAsync(string text);
     }

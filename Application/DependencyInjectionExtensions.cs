@@ -9,7 +9,7 @@
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddSingleton<ITextAnalyzer, SimpleTextAnalyzer>();
-            services.AddScoped<IWordsService, WordsService>();
+            services.AddScoped<ITextProcessingService, TextProcessingService>();
 
             return services;
         }

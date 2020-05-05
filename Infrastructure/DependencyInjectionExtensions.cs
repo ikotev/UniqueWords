@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UniqueWords.Application.Words;
 using UniqueWords.Infrastructure.Persistence;
-using UniqueWords.Infrastructure.Words;
+using UniqueWords.Infrastructure.TextProcessing;
 
 namespace UniqueWords.Infrastructure
 {
@@ -17,7 +17,7 @@ namespace UniqueWords.Infrastructure
                 options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(UniqueWordsDbContext).Assembly.FullName)));
 
             services.AddScoped<UniqueWords.Infrastructure.Persistence.IDbContextFactory<UniqueWordsDbContext>, UniqueWordsDbContextFactory>();
-            services.AddScoped<IWordsDataContextFactory, WordsDataContextFactory>();
+            services.AddScoped<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>();
 
             return services;
         }        

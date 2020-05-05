@@ -10,16 +10,16 @@
     using Microsoft.Extensions.Logging;
     using UniqueWords.Domain.Entities;
 
-    public class WordsService : IWordsService
+    public class TextProcessingService : ITextProcessingService
     {
-        private readonly IWordsDataContextFactory _dataContextFactory;
+        private readonly ITextProcessingDataContextFactory _dataContextFactory;
         private readonly ITextAnalyzer _textAnalyzer;
-        private readonly ILogger<WordsService> _logger;
+        private readonly ILogger<TextProcessingService> _logger;
 
-        public WordsService(
-            IWordsDataContextFactory dataContextFactory,
+        public TextProcessingService(
+            ITextProcessingDataContextFactory dataContextFactory,
             ITextAnalyzer textAnalyzer,
-            ILogger<WordsService> logger)
+            ILogger<TextProcessingService> logger)
         {
             _dataContextFactory = dataContextFactory;
             _textAnalyzer = textAnalyzer;
