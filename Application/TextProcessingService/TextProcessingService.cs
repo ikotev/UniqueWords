@@ -14,6 +14,7 @@
     {
         private readonly ITextProcessingDataContextFactory _dataContextFactory;
         private readonly ITextAnalyzer _textAnalyzer;
+        private readonly Lazy<Task<List<string>>> _watchWordsLazy;
         private readonly ILogger<TextProcessingService> _logger;
 
         public TextProcessingService(
@@ -23,6 +24,7 @@
         {
             _dataContextFactory = dataContextFactory;
             _textAnalyzer = textAnalyzer;
+            _watchWordsLazy = new Lazy<Task<List<string>>>(WatchWordsValueFactoryAsync);
             _logger = logger;
         }
 
@@ -54,11 +56,11 @@
             using (var db = _dataContextFactory.Create())
             {
                 var uniqueWords = await db.WordsRepository.AddNewWordsAsync(distinctTokens);
-                watchWords = await FindWatchWordMatchesAsync(db.WatchWordsRepository, distinctTokens); 
+                watchWords = await FindWatchWordMatchesAsync(distinctTokens);
 
                 uniqueWordsCount = uniqueWords.Count;
             }
-           
+
             var result = new ProcessedTextResult
             {
                 DistinctWords = distinctTokens.Count,
@@ -70,14 +72,31 @@
         }
 
 
-        private async Task<List<string>> FindWatchWordMatchesAsync(IWatchWordsRepository watchWordsRepository, List<string> words)
+        private async Task<List<string>> FindWatchWordMatchesAsync(List<string> words)
         {
-            var matches = await watchWordsRepository.FindAsync(words);
-            var wordMatches = matches
+            var watchWords = await _watchWordsLazy.Value;
+
+            var matches = watchWords
+                .Intersect(words)
+                .ToList();
+
+            return matches;
+        }
+
+        private async Task<List<string>> WatchWordsValueFactoryAsync()
+        {
+            List<WatchWordItem> watchWords;
+
+            using (var db = _dataContextFactory.Create())
+            {
+                watchWords = await db.WatchWordsRepository.GetAllAsync();
+            }
+
+            var result = watchWords
                 .Select(ww => ww.Word)
                 .ToList();
 
-            return wordMatches;
+            return result;
         }
 
         private List<string> GetDistinctTokens(string text)

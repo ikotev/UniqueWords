@@ -17,6 +17,18 @@ namespace UniqueWords.Infrastructure.TextProcessing
             _dbContext = dbContext;
         }
 
+        public async Task<List<WatchWordItem>> GetAllAsync()
+        {
+            var query = from wl in _dbContext.WatchList                        
+                        select wl;
+
+            var result = await query
+                .AsNoTracking()
+                .ToListAsync();
+
+            return result;
+        }
+
         public async Task<List<WatchWordItem>> FindAsync(List<string> words)
         {
             var query = from wl in _dbContext.WatchList
@@ -26,7 +38,7 @@ namespace UniqueWords.Infrastructure.TextProcessing
             var result = await query
                 .AsNoTracking()
                 .ToListAsync();
-                
+
             return result;
         }
     }

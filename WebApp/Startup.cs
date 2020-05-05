@@ -51,7 +51,7 @@ namespace UniqueWords.WebApp
 
             app.UseCorsServices();
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseSwaggerServices();
 

@@ -6,6 +6,7 @@ namespace UniqueWords.Application.Words
 {
     public interface IWatchWordsRepository
     {                
+        Task<List<WatchWordItem>> GetAllAsync();        
         Task<List<WatchWordItem>> FindAsync(List<string> words);
     }
 }
