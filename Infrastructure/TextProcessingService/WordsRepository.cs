@@ -20,7 +20,7 @@ namespace UniqueWords.Infrastructure.TextProcessing
             _dbContext = dbContext;
         }
 
-        public async Task<List<AddNewWordsOutput>> AddNewWordsV2Async(List<string> words)
+        public async Task<List<AddNewWordsOutput>> AddNewWordsAsync(List<string> words)
         {
             var table = new DataTable();
             table.Columns.Add("RowId", typeof(int));

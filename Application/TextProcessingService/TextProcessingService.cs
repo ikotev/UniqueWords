@@ -35,7 +35,7 @@
 
             try
             {
-                return await AnalyzeTextTokensV2Async(text);
+                return await AnalyzeTextTokensAsync(text);
             }
             catch (Exception e)
             {
@@ -44,51 +44,43 @@
             }
         }
 
-        private async Task<ProcessedTextResult> AnalyzeTextTokensV2Async(string text)
+        private async Task<ProcessedTextResult> AnalyzeTextTokensAsync(string text)
         {
-            int newWordsCount;
+            int uniqueWordsCount;
             List<WatchWordItem> watchWords;
-
-            var tokens = _textAnalyzer.GetTokens(text);
-            var distinctTokens = tokens
-                .Distinct()
-                .ToList();            
+            
+            var distinctTokens = GetDistinctTokens(text);
 
             using (var db = _dataContextFactory.Create())
             {
-                newWordsCount = await AddNewWordsV2Async(db.WordsRepository, distinctTokens);                
-                watchWords = await db.WatchListRepository.FindAsync(distinctTokens);                 
+                var uniqueWords = await db.WordsRepository.AddNewWordsAsync(distinctTokens);
+                watchWords = await db.WatchListRepository.FindAsync(distinctTokens);
+
+                uniqueWordsCount = uniqueWords.Count;
             }
 
-            var watchList = watchWords
+            var watchWordsList = watchWords
                 .Select(ww => ww.Word)
                 .ToList();
 
             var result = new ProcessedTextResult
             {
                 DistinctWords = distinctTokens.Count,
-                DistinctUniqueWords = newWordsCount,
-                WatchlistWords = watchList
+                DistinctUniqueWords = uniqueWordsCount,
+                WatchlistWords = watchWordsList
             };
 
             return result;
         }
 
-        private async Task<int> AddNewWordsV2Async(IWordsRepository wordsRepository, List<string> words)
+        private List<string> GetDistinctTokens(string text)
         {
-            var response = await wordsRepository.AddNewWordsV2Async(words);
-
-            return response.Count;
-        }      
-               
-        private static async Task<List<string>> FindNewWordsAsync(IWordsRepository wordsRepository, List<string> words)
-        {
-            var matchedWords = await wordsRepository.FindAsync(words);
-            var newWords = words
-                .Except(matchedWords.Select(wi => wi.Word))
+            var tokens = _textAnalyzer.GetTokens(text);
+            var distinctTokens = tokens
+                .Distinct()
                 .ToList();
 
-            return newWords;
+            return distinctTokens;
         }
     }
 }

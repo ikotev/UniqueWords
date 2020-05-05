@@ -7,7 +7,7 @@ namespace UniqueWords.Application.Words
 {
     public interface IWordsRepository
     {        
-        Task<List<AddNewWordsOutput>> AddNewWordsV2Async(List<string> words);   
+        Task<List<AddNewWordsOutput>> AddNewWordsAsync(List<string> words);   
 
         Task AddWordsAsync(List<WordItem> words);
 
