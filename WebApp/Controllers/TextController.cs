@@ -1,8 +1,7 @@
 ﻿namespace UniqueWords.WebApp.Controllers
 {
-    using Microsoft.AspNetCore.Mvc;
-
     using Models;
+    using Microsoft.AspNetCore.Mvc;    
 
     using System.Net.Mime;
     using System.Threading.Tasks;
@@ -19,9 +18,9 @@
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<TextResultModel>> PostText([FromBody] string text)
-        {
-            var result = await _textProcessingService.ProcessTextAsync(text);
+        public async Task<ActionResult<TextResultModel>> PostText([FromBody] TextModel model)
+        {            
+            var result = await _textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel
             {
