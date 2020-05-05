@@ -69,43 +69,46 @@
             var distinctTokens = tokens
                 .Distinct()
                 .ToList();
+            int newWordsCount;
             List<WatchWordItem> watchWords;
 
             using (var db = _dataContextFactory.Create())
             {
-                await AddNewWordsV2Async(db.WordsRepository, distinctTokens);
-
-                watchWords = await db.WatchListRepository.FindAsync(distinctTokens);
+                newWordsCount = await AddNewWordsV2Async(db.WordsRepository, distinctTokens);                
+                watchWords = await db.WatchListRepository.FindAsync(distinctTokens);                 
             }
 
             var watchList = watchWords
                 .Select(ww => ww.Word)
                 .ToList();
+
             var result = new ProcessedTextResult
             {
-                DistinctUniqueWords = distinctTokens.Count,
+                DistinctWords = distinctTokens.Count,
+                DistinctUniqueWords = newWordsCount,
                 WatchlistWords = watchList
             };
 
             return result;
         }
 
-        private async Task AddNewWordsV2Async(IWordsRepository wordsRepository, List<string> words)
+        private async Task<int> AddNewWordsV2Async(IWordsRepository wordsRepository, List<string> words)
         {
             var response = await wordsRepository.AddNewWordsV2Async(words);
 
-            var n = response.Count;
+            return response.Count;
         }
 
         private async Task<ProcessedTextResult> AnalyzeTextTokensAsync(string text)
         {
             var tokens = _textAnalyzer.GetTokens(text);
             var distinctTokens = tokens.Distinct().ToList();
+            int newWordsCount;
             List<WatchWordItem> watchWords;
 
             using (var db = _dataContextFactory.Create())
             {
-                await AddNewWordsAsync(db, distinctTokens);
+                newWordsCount = await AddNewWordsAsync(db, distinctTokens);
 
                 watchWords = await db.WatchListRepository.FindAsync(distinctTokens);
             }
@@ -113,20 +116,23 @@
             var watchList = watchWords
                 .Select(ww => ww.Word)
                 .ToList();
+
             var result = new ProcessedTextResult
             {
-                DistinctUniqueWords = distinctTokens.Count,
+                DistinctWords = distinctTokens.Count,
+                DistinctUniqueWords = newWordsCount,
                 WatchlistWords = watchList
             };
 
             return result;
         }
 
-        private async Task AddNewWordsAsync(IWordsDataContext db, List<string> words)
+        private async Task<int> AddNewWordsAsync(IWordsDataContext db, List<string> words)
         {
             var skip = 0;
             var take = 100;
             var n = words.Count;
+            int newWordsCount = 0;
 
             while (skip < n)
             {
@@ -145,9 +151,13 @@
                     await db.SaveChangesAsync();
 
                     transaction.Commit();
+
+                    newWordsCount += newWords.Count;
                 }
                 skip += take;
             }
+
+            return newWordsCount;
         }
 
         private static async Task<List<string>> FindNewWordsAsync(IWordsRepository wordsRepository, List<string> words)

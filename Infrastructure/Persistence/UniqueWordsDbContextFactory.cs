@@ -15,5 +15,14 @@ namespace UniqueWords.Infrastructure.Persistence
         {
             return new UniqueWordsDbContext(_options);
         }        
+
+        // private static DbContextOptions<UniqueWordsDbContext> GetDbContextOptions(string connectionString)
+        // {
+        //     var optionsBuilder = new DbContextOptionsBuilder<UniqueWordsDbContext>();
+
+        //     optionsBuilder.UseSqlServer(connectionString);
+
+        //     return optionsBuilder.Options;
+        // }
     }    
 }

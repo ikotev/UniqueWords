@@ -25,6 +25,7 @@
 
             return new TextResultModel
             {
+                DistinctWords = result.DistinctWords,
                 DistinctUniqueWords = result.DistinctUniqueWords,
                 WatchlistWords = result.WatchlistWords
             };
