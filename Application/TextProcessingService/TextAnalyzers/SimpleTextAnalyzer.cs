@@ -1,14 +1,14 @@
-﻿namespace UniqueWords.Application.TextProcessing.TextAnalyzers
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
+namespace UniqueWords.Application.TextProcessing.TextAnalyzers
+{
     public class SimpleTextAnalyzer : BaseTextAnalyzer
     {
         protected override string FilterChars(string text)
-        {                        
+        {
             var sb = new StringBuilder(text.Length);
 
             foreach (var c in text)

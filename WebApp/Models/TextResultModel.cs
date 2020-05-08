@@ -1,7 +1,7 @@
-﻿namespace UniqueWords.WebApp.Models
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace UniqueWords.WebApp.Models
+{    
     public class TextResultModel
     {
         public int DistinctWords { get; set; }

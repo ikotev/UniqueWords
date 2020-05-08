@@ -1,8 +1,8 @@
-﻿namespace UniqueWords.WebApp.StartupConfigs
-{
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
+namespace UniqueWords.WebApp.StartupConfigs
+{
     public static class CorsServiceExtensions
     {
         public static IServiceCollection AddCorsServices(this IServiceCollection services)

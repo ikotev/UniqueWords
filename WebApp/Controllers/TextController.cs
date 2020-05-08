@@ -1,12 +1,12 @@
-﻿namespace UniqueWords.WebApp.Controllers
+﻿using Microsoft.AspNetCore.Mvc;
+
+using System.Net.Mime;
+using System.Threading.Tasks;
+using UniqueWords.Application.TextProcessing;
+using UniqueWords.WebApp.Models;
+
+namespace UniqueWords.WebApp.Controllers
 {
-    using Models;
-    using Microsoft.AspNetCore.Mvc;
-
-    using System.Net.Mime;
-    using System.Threading.Tasks;
-    using UniqueWords.Application.TextProcessing;
-
     public class TextController : WebApiControllerBase
     {
         private readonly ITextProcessingService _textProcessingService;

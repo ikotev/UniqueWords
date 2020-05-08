@@ -1,9 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UniqueWords.Application.TaskProcessing
+namespace UniqueWords.Application.WorkQueue
 {
-    public interface IBackgroundTaskQueueConsumer<T>
+    public interface IBackgroundWorkQueueConsumer<T>
     {
         Task<T> ConsumeAsync(CancellationToken cancellationToken = default(CancellationToken));
     }

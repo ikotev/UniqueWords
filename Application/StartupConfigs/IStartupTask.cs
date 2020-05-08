@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Application.StartupConfigs
+namespace UniqueWords.Application.StartupConfigs
 {
     public interface IStartupTask
     {

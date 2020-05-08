@@ -3,15 +3,15 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace UniqueWords.Application.TaskProcessing
+namespace UniqueWords.Application.WorkQueue
 {    
-    public class BackgroundTaskQueue<T> : IBackgroundTaskQueuePublisher<T>, IBackgroundTaskQueueConsumer<T>
+    public class BackgroundWorkQueue<T> : IBackgroundWorkQueuePublisher<T>, IBackgroundWorkQueueConsumer<T>
     {
         private readonly ConcurrentQueue<T> _workItems;
 
         private readonly SemaphoreSlim _signal;
 
-        public BackgroundTaskQueue()
+        public BackgroundWorkQueue()
         {
             _workItems = new ConcurrentQueue<T>();
             _signal = new SemaphoreSlim(0);

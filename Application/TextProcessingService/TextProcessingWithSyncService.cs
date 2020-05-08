@@ -1,87 +1,42 @@
-﻿namespace UniqueWords.Application.TextProcessing
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using UniqueWords.Application.Models;
+using UniqueWords.Application.TextProcessing.TextAnalyzers;
+using UniqueWords.Application.WorkQueue;
+
+namespace UniqueWords.Application.TextProcessing
 {
-    using TextAnalyzers;
-    using Models;
-
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Microsoft.Extensions.Logging;
-    using UniqueWords.Domain.Entities;
-
-    public class TextProcessingWithSyncService : ITextProcessingService
+    public class TextProcessingWithSyncService : BaseTextProcessingService<TextProcessingWithSyncService>
     {
-        private readonly ITextProcessingDataContextFactory _dataContextFactory;
-        private readonly ITextAnalyzer _textAnalyzer;
-        private readonly Lazy<Task<List<string>>> _watchWordsLazy;
-        private readonly ILogger<TextProcessingService> _logger;
+        private readonly IBackgroundWorkQueuePublisher<UniqueWordWorkItem> _workQueue;
 
         public TextProcessingWithSyncService(
             ITextProcessingDataContextFactory dataContextFactory,
             ITextAnalyzer textAnalyzer,
-            ILogger<TextProcessingService> logger)
+            IBackgroundWorkQueuePublisher<UniqueWordWorkItem> workQueue,
+            ILogger<TextProcessingWithSyncService> logger)
+            : base(dataContextFactory, textAnalyzer, logger)
         {
-            _dataContextFactory = dataContextFactory;
-            _textAnalyzer = textAnalyzer;
-            _watchWordsLazy = new Lazy<Task<List<string>>>(WatchWordsValueFactoryAsync);
-            _logger = logger;
+            _workQueue = workQueue;
         }
 
-        public async Task<ProcessedTextResult> ProcessTextAsync(string text)
+        protected override async Task<List<string>> AddUniqueWordsAsync(IWordsDataContext db, List<string> words)
         {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                throw new ArgumentException(nameof(text));
-            }
+            var uniqueWords = await FindUniqueWordsAsync(db.WordsRepository, words);
 
-            try
-            {
-                return await AnalyzeTextAsync(text);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "An error occurred while processing text.");
-                throw;
-            }
+            _workQueue.Publish(new UniqueWordWorkItem(uniqueWords));       
+
+            return uniqueWords;
         }
 
-        private async Task<ProcessedTextResult> AnalyzeTextAsync(string text)
-        {
-            int uniqueWordsCount;
-            List<string> watchWords;
-
-            var distinctTokens = GetDistinctTokens(text);
-
-            using (var db = _dataContextFactory.Create())
-            {
-                var newWords = await FindNewWordsAsync(db.WordsRepository,  distinctTokens);
-                
-                //todo: FIX
-                //ENQUE_NEW_WORDS_TO_INSERT(newWords);
-
-                watchWords = await FindWatchWordMatchesAsync(distinctTokens);
-
-                uniqueWordsCount = newWords.Count;
-            }
-
-            var result = new ProcessedTextResult
-            {
-                DistinctWords = distinctTokens.Count,
-                DistinctUniqueWords = uniqueWordsCount,
-                WatchlistWords = watchWords
-            };
-
-            return result;
-        }
-
-
-        private async Task<List<string>> FindNewWordsAsync(IWordsRepository wordsRepository, List<string> words)
+        private async Task<List<string>> FindUniqueWordsAsync(IWordsRepository wordsRepository, List<string> words)
         {
             var skip = 0;
             var take = 100;
             var n = words.Count;
-            var newWords = new List<string>();
+            var uniqueWords = new List<string>();
 
             while (skip < n)
             {
@@ -91,52 +46,15 @@
                 .ToList();
 
                 var foundWords = await wordsRepository.FindAsync(wordsPart);
-                var newWordsPart = wordsPart
-                .Except(foundWords.Select(wi => wi.Word));                
-                
-                newWords.AddRange(newWordsPart);
+                var uniqueWordsPart = wordsPart
+                .Except(foundWords.Select(wi => wi.Word));
+
+                uniqueWords.AddRange(uniqueWordsPart);
 
                 skip += take;
             }
 
-            return newWords;
-        }
-
-        private async Task<List<string>> FindWatchWordMatchesAsync(List<string> words)
-        {
-            var watchWords = await _watchWordsLazy.Value;
-
-            var matches = watchWords
-                .Intersect(words)
-                .ToList();
-
-            return matches;
-        }
-
-        private async Task<List<string>> WatchWordsValueFactoryAsync()
-        {
-            List<WatchWordItem> watchWords;
-
-            using (var db = _dataContextFactory.Create())
-            {
-                watchWords = await db.WatchWordsRepository.GetAllAsync();
-            }
-
-            var result = watchWords
-                .Select(ww => ww.Word)
-                .ToList();
-
-            return result;
-        }
-
-        private List<string> GetDistinctTokens(string text)
-        {
-            var tokens = _textAnalyzer.GetTokens(text);
-            var distinctTokens = tokens
-                .Distinct()
-                .ToList();
-
-            return distinctTokens;
+            return uniqueWords;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿namespace UniqueWords.Application.TextProcessing
-{
-    using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
+namespace UniqueWords.Application.TextProcessing
+{    
     public class ProcessedTextResult
     {
         public int DistinctWords { get; set; }

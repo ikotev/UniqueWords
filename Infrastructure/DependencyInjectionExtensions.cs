@@ -5,7 +5,7 @@ using UniqueWords.Application.TextProcessing;
 using UniqueWords.Infrastructure.Persistence;
 using UniqueWords.Infrastructure.TextProcessing;
 
-namespace UniqueWords.Infrastructure
+namespace UniqueWords.Infrastructure.Extensions.DependencyInjection
 {
     public static class DependencyInjectionExtensions
     {

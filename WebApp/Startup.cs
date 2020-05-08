@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+using UniqueWords.Application.Extensions.DependencyInjection;
+using UniqueWords.Infrastructure.Extensions.DependencyInjection;
+using UniqueWords.WebApp.StartupConfigs;
 
 [assembly: ApiConventionType(typeof(DefaultApiConventions))]
 
 namespace UniqueWords.WebApp
 {
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-
-    using StartupConfigs;
-    using UniqueWords.Application;
-    using UniqueWords.Infrastructure;
-
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -39,7 +37,7 @@ namespace UniqueWords.WebApp
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {            
+        {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

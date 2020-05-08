@@ -1,17 +1,17 @@
-﻿namespace UniqueWords.WebApp.StartupConfigs
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+
+using System;
+using System.IO;
+using System.Net;
+using System.Net.Mime;
+using System.Text.Json;
+using System.Threading.Tasks;
+
+namespace UniqueWords.WebApp.StartupConfigs
 {
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Logging;
-
-    using System;
-    using System.IO;
-    using System.Net;
-    using System.Net.Mime;
-    using System.Text.Json;
-    using System.Threading.Tasks;
-
     public class ExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
