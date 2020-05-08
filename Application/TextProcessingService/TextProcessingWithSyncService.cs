@@ -2,31 +2,31 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using UniqueWords.Application.Models;
 using UniqueWords.Application.TextProcessing.TextAnalyzers;
+using UniqueWords.Application.UniqueWordsWorkItem;
 using UniqueWords.Application.WorkQueue;
 
 namespace UniqueWords.Application.TextProcessing
 {
     public class TextProcessingWithSyncService : BaseTextProcessingService<TextProcessingWithSyncService>
     {
-        private readonly IBackgroundWorkQueuePublisher<UniqueWordWorkItem> _workQueue;
+        private readonly IBackgroundWorkQueuePublisher<UniqueWordsMessage> _workQueuePublisher;
 
         public TextProcessingWithSyncService(
             ITextProcessingDataContextFactory dataContextFactory,
             ITextAnalyzer textAnalyzer,
-            IBackgroundWorkQueuePublisher<UniqueWordWorkItem> workQueue,
+            IBackgroundWorkQueuePublisher<UniqueWordsMessage> workQueue,
             ILogger<TextProcessingWithSyncService> logger)
             : base(dataContextFactory, textAnalyzer, logger)
         {
-            _workQueue = workQueue;
+            _workQueuePublisher = workQueue;
         }
 
         protected override async Task<List<string>> AddUniqueWordsAsync(IWordsDataContext db, List<string> words)
         {
             var uniqueWords = await FindUniqueWordsAsync(db.WordsRepository, words);
 
-            _workQueue.Publish(new UniqueWordWorkItem(uniqueWords));       
+            _workQueuePublisher.Publish(new UniqueWordsMessage(uniqueWords));       
 
             return uniqueWords;
         }
