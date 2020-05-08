@@ -9,6 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
+            "requireExactSource": false,
             // If you have changed target frameworks, make sure to update the program path.
             "program": "${workspaceFolder}/WebApp/bin/Debug/netcoreapp2.2/WebApp.dll",
             "args": [],

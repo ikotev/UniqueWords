@@ -11,7 +11,7 @@ namespace UniqueWords.Application.Extensions.DependencyInjection
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddSingleton<ITextAnalyzer, SimpleTextAnalyzer>();
-            services.AddScoped<ITextProcessingService, TextProcessingService>();
+            services.AddScoped<ITextProcessingService, TextProcessingWithSyncService>();
 
             services.AddSingleton<BackgroundWorkQueue<UniqueWordsMessage>>();
             services.AddSingleton<IBackgroundWorkQueuePublisher<UniqueWordsMessage>>(provider =>

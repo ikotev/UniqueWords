@@ -26,7 +26,10 @@ namespace UniqueWords.Application.TextProcessing
         {
             var uniqueWords = await FindUniqueWordsAsync(db.WordsRepository, words);
 
-            _workQueuePublisher.Publish(new UniqueWordsMessage(uniqueWords));       
+            if (uniqueWords.Any())
+            {
+                _workQueuePublisher.Publish(new UniqueWordsMessage(uniqueWords));
+            }
 
             return uniqueWords;
         }
