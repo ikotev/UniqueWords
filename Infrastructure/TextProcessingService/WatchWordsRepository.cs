@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using System.Linq;
 using UniqueWords.Domain.Entities;
+using System.Threading;
 
 namespace UniqueWords.Infrastructure.TextProcessing
 {
@@ -17,14 +18,14 @@ namespace UniqueWords.Infrastructure.TextProcessing
             _dbContext = dbContext;
         }
 
-        public async Task<List<WatchWordItem>> GetAllAsync()
+        public async Task<List<WatchWordItem>> GetAllAsync(CancellationToken cancellationToken)
         {
             var query = from wl in _dbContext.WatchList                        
                         select wl;
 
             var result = await query
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return result;
         }

@@ -9,24 +9,22 @@
     using System.Threading.Tasks;
     using Microsoft.Extensions.Logging;
     using UniqueWords.Domain.Entities;
-    using global::Application.StartupConfigs;
-    using System.Threading;
 
-    public class TextProcessingService : ITextProcessingService, IStartupTask
+    public class TextProcessingWithSyncService : ITextProcessingService
     {
         private readonly ITextProcessingDataContextFactory _dataContextFactory;
         private readonly ITextAnalyzer _textAnalyzer;
-        private static volatile Task<List<string>> _watchWordsCache;
-        private static object _watchWordsCacheLock = new object();
+        private readonly Lazy<Task<List<string>>> _watchWordsLazy;
         private readonly ILogger<TextProcessingService> _logger;
 
-        public TextProcessingService(
+        public TextProcessingWithSyncService(
             ITextProcessingDataContextFactory dataContextFactory,
             ITextAnalyzer textAnalyzer,
             ILogger<TextProcessingService> logger)
         {
             _dataContextFactory = dataContextFactory;
             _textAnalyzer = textAnalyzer;
+            _watchWordsLazy = new Lazy<Task<List<string>>>(WatchWordsValueFactoryAsync);
             _logger = logger;
         }
 
@@ -57,10 +55,14 @@
 
             using (var db = _dataContextFactory.Create())
             {
-                var uniqueWords = await db.WordsRepository.TryAddNewWordsAsync(distinctTokens);
+                var newWords = await FindNewWordsAsync(db.WordsRepository,  distinctTokens);
+                
+                //todo: FIX
+                //ENQUE_NEW_WORDS_TO_INSERT(newWords);
+
                 watchWords = await FindWatchWordMatchesAsync(distinctTokens);
 
-                uniqueWordsCount = uniqueWords.Count;
+                uniqueWordsCount = newWords.Count;
             }
 
             var result = new ProcessedTextResult
@@ -74,9 +76,35 @@
         }
 
 
+        private async Task<List<string>> FindNewWordsAsync(IWordsRepository wordsRepository, List<string> words)
+        {
+            var skip = 0;
+            var take = 100;
+            var n = words.Count;
+            var newWords = new List<string>();
+
+            while (skip < n)
+            {
+                var wordsPart = words
+                .Skip(skip)
+                .Take(take)
+                .ToList();
+
+                var foundWords = await wordsRepository.FindAsync(wordsPart);
+                var newWordsPart = wordsPart
+                .Except(foundWords.Select(wi => wi.Word));                
+                
+                newWords.AddRange(newWordsPart);
+
+                skip += take;
+            }
+
+            return newWords;
+        }
+
         private async Task<List<string>> FindWatchWordMatchesAsync(List<string> words)
         {
-            var watchWords = await GetWatchWordsCacheTask();
+            var watchWords = await _watchWordsLazy.Value;
 
             var matches = watchWords
                 .Intersect(words)
@@ -85,29 +113,13 @@
             return matches;
         }
 
-        private Task<List<string>> GetWatchWordsCacheTask(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (_watchWordsCache == null)
-            {
-                lock (_watchWordsCacheLock)
-                {
-                    if (_watchWordsCache == null)
-                    {
-                        _watchWordsCache =  LoadWatchWordsAsync(cancellationToken);
-                    }
-                }
-            }
-
-            return _watchWordsCache;
-        }
-
-        private async Task<List<string>> LoadWatchWordsAsync(CancellationToken cancellationToken)
+        private async Task<List<string>> WatchWordsValueFactoryAsync()
         {
             List<WatchWordItem> watchWords;
 
             using (var db = _dataContextFactory.Create())
             {
-                watchWords = await db.WatchWordsRepository.GetAllAsync(cancellationToken);
+                watchWords = await db.WatchWordsRepository.GetAllAsync();
             }
 
             var result = watchWords
@@ -125,16 +137,6 @@
                 .ToList();
 
             return distinctTokens;
-        }
-
-        public async Task StartAsync(CancellationToken cancellationToken)
-        {
-            await GetWatchWordsCacheTask(cancellationToken);
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
         }
     }
 }
