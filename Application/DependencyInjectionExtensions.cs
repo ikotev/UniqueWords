@@ -1,8 +1,8 @@
 ﻿namespace UniqueWords.Application
 {    
     using Microsoft.Extensions.DependencyInjection;
-    using UniqueWords.Application.Words;
-    using UniqueWords.Application.Words.TextAnalyzers;
+    using UniqueWords.Application.TextProcessing;
+    using UniqueWords.Application.TextProcessing.TextAnalyzers;
 
     public static class DependencyInjectionExtensions
     {

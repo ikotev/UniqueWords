@@ -1,4 +1,4 @@
-﻿namespace UniqueWords.Application.Words.TextAnalyzers
+﻿namespace UniqueWords.Application.TextProcessing.TextAnalyzers
 {
     using System;
     using System.Collections.Generic;

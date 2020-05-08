@@ -1,4 +1,4 @@
-﻿namespace UniqueWords.Application.Models
+﻿namespace UniqueWords.Application.TextProcessing
 {
     using System.Collections.Generic;
 

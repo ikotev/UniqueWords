@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using UniqueWords.Application.Words;
+using UniqueWords.Application.TextProcessing;
 using UniqueWords.Infrastructure.Persistence;
 using UniqueWords.Infrastructure.TextProcessing;
 

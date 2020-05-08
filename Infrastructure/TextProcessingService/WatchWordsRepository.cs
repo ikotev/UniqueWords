@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using UniqueWords.Application.Words;
+using UniqueWords.Application.TextProcessing;
 using UniqueWords.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;

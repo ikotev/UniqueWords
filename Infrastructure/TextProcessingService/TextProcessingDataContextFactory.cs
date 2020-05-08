@@ -1,4 +1,4 @@
-using UniqueWords.Application.Words;
+using UniqueWords.Application.TextProcessing;
 using UniqueWords.Infrastructure.Persistence;
 
 namespace UniqueWords.Infrastructure.TextProcessing

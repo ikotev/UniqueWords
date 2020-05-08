@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using UniqueWords.Domain.Entities;
 
-namespace UniqueWords.Application.Words
+namespace UniqueWords.Application.TextProcessing
 {
     public interface IWatchWordsRepository
     {                

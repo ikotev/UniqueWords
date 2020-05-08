@@ -5,7 +5,7 @@
 
     using System.Net.Mime;
     using System.Threading.Tasks;
-    using UniqueWords.Application.Words;
+    using UniqueWords.Application.TextProcessing;
 
     public class TextController : WebApiControllerBase
     {

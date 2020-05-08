@@ -1,6 +1,6 @@
 using UniqueWords.Application.Persistence;
 
-namespace UniqueWords.Application.Words
+namespace UniqueWords.Application.TextProcessing
 {
     public interface IWordsDataContext : IDataContext
     {

@@ -1,4 +1,4 @@
-namespace UniqueWords.Application.Words
+namespace UniqueWords.Application.TextProcessing
 {
     public interface ITextProcessingDataContextFactory
     {        

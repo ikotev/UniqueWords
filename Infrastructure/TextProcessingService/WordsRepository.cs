@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using UniqueWords.Application.Words;
+using UniqueWords.Application.TextProcessing;
 using UniqueWords.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
