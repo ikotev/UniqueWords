@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace UniqueWords.Application.WorkQueue
 {    
-    public class BackgroundWorkQueue<T> : IBackgroundWorkQueuePublisher<T>, IBackgroundWorkQueueConsumer<T>
+    public class WorkQueue<T> : IWorkQueuePublisher<T>, IWorkQueueConsumer<T>
     {
         private readonly ConcurrentQueue<T> _workItems;
 
         private readonly SemaphoreSlim _signal;
 
-        public BackgroundWorkQueue()
+        public WorkQueue()
         {
             _workItems = new ConcurrentQueue<T>();
             _signal = new SemaphoreSlim(0);

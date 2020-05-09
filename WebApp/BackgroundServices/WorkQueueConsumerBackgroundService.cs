@@ -1,18 +1,19 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using UniqueWords.Application.WorkQueue;
 
-namespace WebApp.BackgroundServices
+namespace UniqueWords.WebApp.BackgroundServices
 {
     public class WorkQueueConsumerBackgroundService<T> : BackgroundService
     {
-        private readonly IBackgroundWorkQueueConsumer<T> _workQueueConsumer;
+        private readonly IWorkQueueConsumer<T> _workQueueConsumer;
         private readonly IEnumerable<IWorkItemHandler<T>> _workItemHndlers;
 
         public WorkQueueConsumerBackgroundService(
-            IBackgroundWorkQueueConsumer<T> workQueueConsumer,
+            IWorkQueueConsumer<T> workQueueConsumer,
             IEnumerable<IWorkItemHandler<T>> workItemHndlers)
         {
             _workQueueConsumer = workQueueConsumer;
@@ -24,11 +25,8 @@ namespace WebApp.BackgroundServices
             while (!cancellationToken.IsCancellationRequested)
             {
                 var workItem = await _workQueueConsumer.ConsumeAsync(cancellationToken);
-
-                foreach (var handler in _workItemHndlers)
-                {
-                    await handler.HandleAsync(workItem);
-                }
+                var handlers = _workItemHndlers.Select(h => h.HandleAsync(workItem));
+                await Task.WhenAll(handlers);                
             }
         }
     }

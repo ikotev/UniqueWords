@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 
-namespace UniqueWords.Application.UniqueWordsWorkItem
+namespace UniqueWords.Application.WordsWorkQueue
 {
-    public class UniqueWordsMessage
+    public class WordsWorkQueueItem
     {
         public List<string> Words { get; private set; }
 
-        public UniqueWordsMessage(IEnumerable<string> words)
+        public WordsWorkQueueItem(IEnumerable<string> words)
         { 
             Words = new List<string>(words);
         }

@@ -13,13 +13,16 @@ namespace UniqueWords.Infrastructure.Extensions.DependencyInjection
         {
             var connectionString = configuration.GetConnectionString("UniqueWordsDbConnection");
 
-            services.AddDbContext<UniqueWordsDbContext>(options =>
-                options.UseSqlServer(connectionString, b => b.MigrationsAssembly(typeof(UniqueWordsDbContext).Assembly.FullName)));
+            services.AddDbContext<UniqueWordsDbContext>(
+                options => options.UseSqlServer(connectionString, sqlServreOptions =>
+                    sqlServreOptions.MigrationsAssembly(typeof(UniqueWordsDbContext).Assembly.FullName)),
+                ServiceLifetime.Scoped,
+                ServiceLifetime.Singleton);
 
-            services.AddScoped<UniqueWords.Infrastructure.Persistence.IDbContextFactory<UniqueWordsDbContext>, UniqueWordsDbContextFactory>();
-            services.AddScoped<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>();
+            services.AddSingleton<UniqueWords.Infrastructure.Persistence.IDbContextFactory<UniqueWordsDbContext>, UniqueWordsDbContextFactory>();
+            services.AddSingleton<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>();
 
             return services;
-        }        
+        }
     }
 }

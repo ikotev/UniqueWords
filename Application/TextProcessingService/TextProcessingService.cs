@@ -10,7 +10,7 @@ namespace UniqueWords.Application.TextProcessing
     {
         public TextProcessingService(
             ITextProcessingDataContextFactory dataContextFactory,
-            ITextAnalyzer textAnalyzer,
+            ITextAnalyzer textAnalyzer,            
             ILogger<TextProcessingService> logger)
             : base(dataContextFactory, textAnalyzer, logger)
         { }

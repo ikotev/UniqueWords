@@ -4,29 +4,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using UniqueWords.Domain.Entities;
 using System.Threading;
-using UniqueWords.Application.StartupConfigs;
+using UniqueWords.Domain.Entities;
 
 namespace UniqueWords.Application.TextProcessing
 {
-    public abstract class BaseTextProcessingService<T> : ITextProcessingService, IStartupTask
+    public abstract class BaseTextProcessingService<T> : ITextProcessingService
         where T : BaseTextProcessingService<T>
-    {
-        private static volatile Task<List<string>> _watchWordsCache;
-        private static object _watchWordsCacheLock = new object();
+    {        
+        private static volatile List<string> _watchWords;
+        private static SemaphoreSlim _signal = new SemaphoreSlim(1, 1);
 
         private readonly ITextProcessingDataContextFactory _dataContextFactory;
-        private readonly ITextAnalyzer _textAnalyzer;
+        private readonly ITextAnalyzer _textAnalyzer;        
         private readonly ILogger<T> _logger;
 
         protected BaseTextProcessingService(
             ITextProcessingDataContextFactory dataContextFactory,
-            ITextAnalyzer textAnalyzer,
+            ITextAnalyzer textAnalyzer,            
             ILogger<T> logger)
         {
             _dataContextFactory = dataContextFactory;
-            _textAnalyzer = textAnalyzer;
+            _textAnalyzer = textAnalyzer;            
             _logger = logger;
         }
 
@@ -77,46 +76,14 @@ namespace UniqueWords.Application.TextProcessing
 
         private async Task<List<string>> FindWatchWordMatchesAsync(List<string> words)
         {
-            var watchWords = await GetWatchWordsCacheTask();
+            var watchWords = await GetWatchWordsAsync();
 
             var matches = watchWords
                 .Intersect(words)
                 .ToList();
 
             return matches;
-        }
-
-        private Task<List<string>> GetWatchWordsCacheTask(CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (_watchWordsCache == null)
-            {
-                lock (_watchWordsCacheLock)
-                {
-                    if (_watchWordsCache == null)
-                    {
-                        _watchWordsCache = LoadWatchWordsAsync(cancellationToken);
-                    }
-                }
-            }
-
-            return _watchWordsCache;
-        }
-
-        private async Task<List<string>> LoadWatchWordsAsync(CancellationToken cancellationToken)
-        {
-            List<WatchWordItem> watchWords;
-
-            using (var db = _dataContextFactory.Create())
-            {
-                watchWords = await db.WatchWordsRepository.GetAllAsync(cancellationToken);
-            }
-
-            var result = watchWords
-                .Select(ww => ww.Word)
-                .ToList();
-
-            return result;
-        }
+        }               
 
         private List<string> GetDistinctTokens(string text)
         {
@@ -126,16 +93,44 @@ namespace UniqueWords.Application.TextProcessing
                 .ToList();
 
             return distinctTokens;
-        }
+        }   
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        private async Task<List<string>> GetWatchWordsAsync()
         {
-            await GetWatchWordsCacheTask(cancellationToken);
-        }
+            if (_watchWords == null)
+            {
+                await _signal.WaitAsync();
 
-        public Task StopAsync(CancellationToken cancellationToken)
+                try
+                {
+                    if (_watchWords == null)
+                    {
+                        _watchWords = await LoadWatchWordsAsync();
+                    }
+                }
+                finally
+                {
+                    _signal.Release();
+                }
+            }
+
+            return _watchWords;
+        }   
+
+        private async Task<List<string>> LoadWatchWordsAsync()
         {
-            return Task.CompletedTask;
-        }
+            List<WatchWordItem> watchWords;
+
+            using (var db = _dataContextFactory.Create())
+            {
+                watchWords = await db.WatchWordsRepository.GetAllAsync();
+            }
+
+            var result = watchWords
+                .Select(ww => ww.Word)
+                .ToList();
+
+            return result;
+        }  
     }
 }

@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UniqueWords.Application.StartupConfigs;
 using UniqueWords.Application.TextProcessing;
 using UniqueWords.Application.TextProcessing.TextAnalyzers;
-using UniqueWords.Application.UniqueWordsWorkItem;
+using UniqueWords.Application.WordsWorkQueue;
 using UniqueWords.Application.WorkQueue;
 
 namespace UniqueWords.Application.Extensions.DependencyInjection
@@ -10,16 +11,19 @@ namespace UniqueWords.Application.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
+            services.AddSingleton<IServiceResolver, ServiceResolver>();
+            
             services.AddSingleton<ITextAnalyzer, SimpleTextAnalyzer>();
-            services.AddScoped<ITextProcessingService, TextProcessingWithSyncService>();
+            services.AddSingleton<ITextProcessingService, TextProcessingService>();
+            services.AddSingleton<ITextProcessingService, TextProcessingWithSyncService>();                        
 
-            services.AddSingleton<BackgroundWorkQueue<UniqueWordsMessage>>();
-            services.AddSingleton<IBackgroundWorkQueuePublisher<UniqueWordsMessage>>(provider =>
-                provider.GetService<BackgroundWorkQueue<UniqueWordsMessage>>());
-            services.AddSingleton<IBackgroundWorkQueueConsumer<UniqueWordsMessage>>(provider =>
-                provider.GetService<BackgroundWorkQueue<UniqueWordsMessage>>());
+            services.AddSingleton<WorkQueue<WordsWorkQueueItem>>();
+            services.AddSingleton<IWorkQueuePublisher<WordsWorkQueueItem>>(provider =>
+                provider.GetService<WorkQueue<WordsWorkQueueItem>>());
+            services.AddSingleton<IWorkQueueConsumer<WordsWorkQueueItem>>(provider =>
+                provider.GetService<WorkQueue<WordsWorkQueueItem>>());
 
-            services.AddSingleton<IWorkItemHandler<UniqueWordsMessage>, UniqueWordsMessageHandler>();
+            services.AddSingleton<IWorkItemHandler<WordsWorkQueueItem>, WordsWorkQueueItemHandler>();
 
             return services;
         }

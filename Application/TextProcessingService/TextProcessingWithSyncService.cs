@@ -3,23 +3,23 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using UniqueWords.Application.TextProcessing.TextAnalyzers;
-using UniqueWords.Application.UniqueWordsWorkItem;
+using UniqueWords.Application.WordsWorkQueue;
 using UniqueWords.Application.WorkQueue;
 
 namespace UniqueWords.Application.TextProcessing
 {
     public class TextProcessingWithSyncService : BaseTextProcessingService<TextProcessingWithSyncService>
     {
-        private readonly IBackgroundWorkQueuePublisher<UniqueWordsMessage> _workQueuePublisher;
+        private readonly IWorkQueuePublisher<WordsWorkQueueItem> _workQueuePublisher;
 
         public TextProcessingWithSyncService(
             ITextProcessingDataContextFactory dataContextFactory,
-            ITextAnalyzer textAnalyzer,
-            IBackgroundWorkQueuePublisher<UniqueWordsMessage> workQueue,
+            ITextAnalyzer textAnalyzer,            
+            IWorkQueuePublisher<WordsWorkQueueItem> workQueuePublisher,
             ILogger<TextProcessingWithSyncService> logger)
             : base(dataContextFactory, textAnalyzer, logger)
         {
-            _workQueuePublisher = workQueue;
+            _workQueuePublisher = workQueuePublisher;
         }
 
         protected override async Task<List<string>> AddUniqueWordsAsync(IWordsDataContext db, List<string> words)
@@ -28,7 +28,7 @@ namespace UniqueWords.Application.TextProcessing
 
             if (uniqueWords.Any())
             {
-                _workQueuePublisher.Publish(new UniqueWordsMessage(uniqueWords));
+                _workQueuePublisher.Publish(new WordsWorkQueueItem(uniqueWords));
             }
 
             return uniqueWords;

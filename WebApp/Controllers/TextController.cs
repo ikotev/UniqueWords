@@ -2,6 +2,7 @@
 
 using System.Net.Mime;
 using System.Threading.Tasks;
+using UniqueWords.Application.StartupConfigs;
 using UniqueWords.Application.TextProcessing;
 using UniqueWords.WebApp.Models;
 
@@ -9,11 +10,11 @@ namespace UniqueWords.WebApp.Controllers
 {
     public class TextController : WebApiControllerBase
     {
-        private readonly ITextProcessingService _textProcessingService;
+        private readonly IServiceResolver _serviceResolver;        
 
-        public TextController(ITextProcessingService textProcessingService)
+        public TextController(IServiceResolver serviceResolver)
         {
-            _textProcessingService = textProcessingService;
+            _serviceResolver = serviceResolver;
         }
 
         /// <summary>
@@ -23,7 +24,8 @@ namespace UniqueWords.WebApp.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostTextWithDbSync([FromBody] TextModel model)
         {
-            var result = await _textProcessingService.ProcessTextAsync(model.Text);
+            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, TextProcessingService>();
+            var result = await textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel
             {
@@ -40,7 +42,8 @@ namespace UniqueWords.WebApp.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostTextWithBackEndSync([FromBody] TextModel model)
         {
-            var result = await _textProcessingService.ProcessTextAsync(model.Text);
+            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, TextProcessingWithSyncService>();
+            var result = await textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel
             {
