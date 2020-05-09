@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using UniqueWords.Application.LazyInitialization;
+using UniqueWords.Application.StartupConfigs;
+using System.Threading;
 
 namespace UniqueWords.Application.TextProcessing
 {
-    public class TextProcessingService : ITextProcessingService
+    public class TextProcessingService : ITextProcessingService, IStartupTask
     {
         private static LazyValueFactory<List<string>> _watchWordsLazy = new LazyValueFactory<List<string>>();        
 
@@ -45,7 +47,7 @@ namespace UniqueWords.Application.TextProcessing
                 _logger.LogError(e, "An error occurred while processing text.");
                 throw;
             }
-        }
+        }        
 
         private async Task<ProcessedTextResult> AnalyzeTextAsync(string text)
         {
@@ -74,7 +76,7 @@ namespace UniqueWords.Application.TextProcessing
 
         private async Task<List<string>> FindWatchWordMatchesAsync(IWatchWordsRepository watchWordsRepository, List<string> words)
         {
-            var watchWords = await _watchWordsLazy.GetValueAsync(() => LoadWatchWordsAsync(watchWordsRepository));
+            var watchWords = await GetWatchWordsAsync(watchWordsRepository);
 
             var matches = watchWords
                 .Intersect(words)
@@ -102,6 +104,25 @@ namespace UniqueWords.Application.TextProcessing
                 .ToList();
 
             return result;
+        }
+
+        private async Task<List<string>> GetWatchWordsAsync(IWatchWordsRepository watchWordsRepository)
+        {
+            var watchWords = await _watchWordsLazy.GetValueAsync(() => LoadWatchWordsAsync(watchWordsRepository));
+            return watchWords;
+        }
+
+        public async Task StartAsync(CancellationToken cancellationToken)
+        {
+            using (var db = _dataContextFactory.Create())
+            {
+                await GetWatchWordsAsync(db.WatchWordsRepository);
+            }
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

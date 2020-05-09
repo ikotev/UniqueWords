@@ -24,7 +24,7 @@ namespace UniqueWords.WebApp.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostTextWithDbSync([FromBody] TextModel model)
         {
-            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, TextProcessingService>();
+            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, UniqueWordsAddingDbSync>();
             var result = await textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel
@@ -42,7 +42,7 @@ namespace UniqueWords.WebApp.Controllers
         [Consumes(MediaTypeNames.Application.Json)]
         public async Task<ActionResult<TextResultModel>> PostTextWithBackEndSync([FromBody] TextModel model)
         {
-            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, TextProcessingWithSyncService>();
+            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, UniqueWordsAddingBackendSync>();
             var result = await textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel
