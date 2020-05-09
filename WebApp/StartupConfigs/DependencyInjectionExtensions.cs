@@ -10,8 +10,9 @@ namespace UniqueWords.WebApp.StartupConfigs
     {
         public static IServiceCollection AddDependencies(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton<IHostedService, StartupTasksBackgroundService>();            
-            services.AddSingleton<IHostedService, WorkQueueConsumerBackgroundService<WordsWorkQueueItem>>();            
+            services
+                .AddSingleton<IHostedService, StartupTasksBackgroundService>()           
+                .AddSingleton<IHostedService, WorkQueueConsumerBackgroundService<WordsWorkQueueItem>>();            
 
             return services;
         }

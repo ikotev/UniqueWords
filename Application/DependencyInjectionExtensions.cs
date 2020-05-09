@@ -11,19 +11,21 @@ namespace UniqueWords.Application.Extensions.DependencyInjection
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            services.AddSingleton<IServiceResolver, ServiceResolver>();
-            
-            services.AddSingleton<ITextAnalyzer, SimpleTextAnalyzer>();
-            services.AddSingleton<IUniqueWordsAddingStrategy, UniqueWordsAddingDbSync>();
-            services.AddSingleton<IUniqueWordsAddingStrategy, UniqueWordsAddingBackendSync>();                        
+            services
+                .AddSingleton<IServiceResolver, ServiceResolver>()
 
-            services.AddSingleton<WorkQueue<WordsWorkQueueItem>>();
-            services.AddSingleton<IWorkQueuePublisher<WordsWorkQueueItem>>(provider =>
-                provider.GetService<WorkQueue<WordsWorkQueueItem>>());
-            services.AddSingleton<IWorkQueueConsumer<WordsWorkQueueItem>>(provider =>
-                provider.GetService<WorkQueue<WordsWorkQueueItem>>());
+                .AddSingleton<ITextAnalyzer, SimpleTextAnalyzer>()
+                .AddSingleton<IUniqueWordsAddingStrategy, UniqueWordsAddingDbSync>()
+                .AddSingleton<IUniqueWordsAddingStrategy, UniqueWordsAddingBackendSync>()
+                .AddSingleton<ITextProcessingServiceFactory, TextProcessingServiceFactory>()
 
-            services.AddSingleton<IWorkItemHandler<WordsWorkQueueItem>, WordsWorkQueueItemHandler>();
+                .AddSingleton<WorkQueue<WordsWorkQueueItem>>()
+                .AddSingleton<IWorkQueuePublisher<WordsWorkQueueItem>>(provider =>
+                    provider.GetService<WorkQueue<WordsWorkQueueItem>>())
+                .AddSingleton<IWorkQueueConsumer<WordsWorkQueueItem>>(provider =>
+                    provider.GetService<WorkQueue<WordsWorkQueueItem>>())
+
+                .AddSingleton<IWorkItemHandler<WordsWorkQueueItem>, WordsWorkQueueItemHandler>();
 
             return services;
         }

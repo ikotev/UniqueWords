@@ -14,8 +14,15 @@ namespace UniqueWords.Application.StartupConfigs
             _serviceProvider = serviceProvider;
         }
 
-        public TService GetService<TService, TImplementation>()
-        {            
+        public TService GetService<TService>()
+        {
+            var service = _serviceProvider.GetService<TService>();                
+
+            return service;
+        }
+
+        public TService GetService<TService, TImplementation>() where TImplementation : TService
+        {
             var service = _serviceProvider.GetServices<TService>()
                 .First(s => s.GetType() == typeof(TImplementation));
 

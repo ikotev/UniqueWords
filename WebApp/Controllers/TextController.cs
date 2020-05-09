@@ -2,7 +2,6 @@
 
 using System.Net.Mime;
 using System.Threading.Tasks;
-using UniqueWords.Application.StartupConfigs;
 using UniqueWords.Application.TextProcessing;
 using UniqueWords.WebApp.Models;
 
@@ -10,21 +9,21 @@ namespace UniqueWords.WebApp.Controllers
 {
     public class TextController : WebApiControllerBase
     {
-        private readonly IServiceResolver _serviceResolver;        
+        private readonly ITextProcessingServiceFactory _textProcessingServiceFactory;        
 
-        public TextController(IServiceResolver serviceResolver)
+        public TextController(ITextProcessingServiceFactory textProcessingServiceFactory)
         {
-            _serviceResolver = serviceResolver;
+            _textProcessingServiceFactory = textProcessingServiceFactory;
         }
 
         /// <summary>
-        /// Uses DB lock to synchronize addition of new words
+        /// Uses DB lock to synchronize unique words adding
         /// </summary>
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<TextResultModel>> PostTextWithDbSync([FromBody] TextModel model)
+        public async Task<ActionResult<TextResultModel>> PostTextWithDbSync(TextModel model)
         {
-            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, UniqueWordsAddingDbSync>();
+            var textProcessingService = _textProcessingServiceFactory.Create<UniqueWordsAddingDbSync>();
             var result = await textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel
@@ -36,13 +35,13 @@ namespace UniqueWords.WebApp.Controllers
         }
 
         /// <summary>
-        /// Uses back-end service to synchronize addition of new words
+        /// Uses back-end service to synchronize unique words adding
         /// </summary>
         [HttpPost("backend-sync")]
         [Consumes(MediaTypeNames.Application.Json)]
-        public async Task<ActionResult<TextResultModel>> PostTextWithBackEndSync([FromBody] TextModel model)
+        public async Task<ActionResult<TextResultModel>> PostTextWithBackEndSync(TextModel model)
         {
-            var textProcessingService = _serviceResolver.GetService<ITextProcessingService, UniqueWordsAddingBackendSync>();
+            var textProcessingService = _textProcessingServiceFactory.Create<UniqueWordsAddingBackendSync>();
             var result = await textProcessingService.ProcessTextAsync(model.Text);
 
             return new TextResultModel

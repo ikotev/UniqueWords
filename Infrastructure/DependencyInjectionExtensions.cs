@@ -17,10 +17,10 @@ namespace UniqueWords.Infrastructure.Extensions.DependencyInjection
                 options => options.UseSqlServer(connectionString, sqlServreOptions =>
                     sqlServreOptions.MigrationsAssembly(typeof(UniqueWordsDbContext).Assembly.FullName)),
                 ServiceLifetime.Scoped,
-                ServiceLifetime.Singleton);
+                ServiceLifetime.Singleton)
 
-            services.AddSingleton<UniqueWords.Infrastructure.Persistence.IDbContextFactory<UniqueWordsDbContext>, UniqueWordsDbContextFactory>();
-            services.AddSingleton<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>();
+                .AddSingleton<IDbContextFactory<UniqueWordsDbContext>, UniqueWordsDbContextFactory>()
+                .AddSingleton<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>();
 
             return services;
         }

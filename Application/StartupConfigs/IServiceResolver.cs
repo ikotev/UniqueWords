@@ -2,6 +2,8 @@ namespace UniqueWords.Application.StartupConfigs
 {
     public interface IServiceResolver
     {
-        TService GetService<TService, TImplementation>();
+        TService GetService<TService>();
+        
+        TService GetService<TService, TImplementation>() where TImplementation : TService;
     }
 }

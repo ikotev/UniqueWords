@@ -19,7 +19,7 @@ namespace UniqueWords.Application.TextProcessing
         private readonly IUniqueWordsAddingStrategy _uniqueWorsAddingStrategy;
         private readonly ILogger<TextProcessingService> _logger;
 
-        protected TextProcessingService(
+        public TextProcessingService(
             ITextProcessingDataContextFactory dataContextFactory,
             IUniqueWordsAddingStrategy uniqueWorsAddingStrategy,
             ITextAnalyzer textAnalyzer,
@@ -30,7 +30,7 @@ namespace UniqueWords.Application.TextProcessing
             _textAnalyzer = textAnalyzer;
             _logger = logger;            
         }
-
+               
         public async Task<ProcessedTextResult> ProcessTextAsync(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
