@@ -1,30 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using UniqueWords.Application.TextProcessing.TextAnalyzers;
 using UniqueWords.Application.WordsWorkQueue;
 using UniqueWords.Application.WorkQueue;
 
 namespace UniqueWords.Application.TextProcessing
 {
-    public class TextProcessingWithSyncService : BaseTextProcessingService<TextProcessingWithSyncService>
+
+    public class UniqueWordsAddingBackendSync : IUniqueWordsAddingStrategy
     {
         private readonly IWorkQueuePublisher<WordsWorkQueueItem> _workQueuePublisher;
 
-        public TextProcessingWithSyncService(
-            ITextProcessingDataContextFactory dataContextFactory,
-            ITextAnalyzer textAnalyzer,            
-            IWorkQueuePublisher<WordsWorkQueueItem> workQueuePublisher,
-            ILogger<TextProcessingWithSyncService> logger)
-            : base(dataContextFactory, textAnalyzer, logger)
+        public UniqueWordsAddingBackendSync(IWorkQueuePublisher<WordsWorkQueueItem> workQueuePublisher)
         {
             _workQueuePublisher = workQueuePublisher;
         }
 
-        protected override async Task<List<string>> AddUniqueWordsAsync(IWordsDataContext db, List<string> words)
+        public async Task<List<string>> AddUniqueWordsAsync(IWordsRepository wordsRepository, List<string> words)
         {
-            var uniqueWords = await FindUniqueWordsAsync(db.WordsRepository, words);
+            var uniqueWords = await FindUniqueWordsAsync(wordsRepository, words);
 
             if (uniqueWords.Any())
             {
