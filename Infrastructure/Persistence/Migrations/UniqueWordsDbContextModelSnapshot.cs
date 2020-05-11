@@ -22,10 +22,12 @@ namespace UniqueWords.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Word")
                         .IsRequired()
+                        .HasColumnType("nvarchar(512)")
                         .HasMaxLength(512);
 
                     b.HasKey("Id");
@@ -57,10 +59,12 @@ namespace UniqueWords.Infrastructure.Persistence.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Word")
                         .IsRequired()
+                        .HasColumnType("nvarchar(512)")
                         .HasMaxLength(512);
 
                     b.HasKey("Id");

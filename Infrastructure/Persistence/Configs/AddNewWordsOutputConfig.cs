@@ -8,7 +8,10 @@ namespace UniqueWords.Infrastructure.Persistence.Configs
     {
         public void Configure(EntityTypeBuilder<AddNewWordsOutput> builder)
         {
-            builder.HasNoKey();
+            // https://github.com/dotnet/efcore/issues/18116
+            builder
+                .HasNoKey()
+                .ToView(null);
         }
     }
 }
