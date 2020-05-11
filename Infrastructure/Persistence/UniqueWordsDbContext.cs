@@ -20,7 +20,7 @@
 
         public DbSet<WatchWordItem> WatchList { get; set; }
 
-        public DbQuery<AddNewWordsOutput> AddNewWords { get; set; }
+        public DbSet<AddNewWordsOutput> AddNewWords { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

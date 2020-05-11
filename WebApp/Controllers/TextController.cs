@@ -7,6 +7,7 @@ using UniqueWords.WebApp.Models;
 
 namespace UniqueWords.WebApp.Controllers
 {
+    [ApiVersion(WebApiDefaults.LatestVersion)]
     public class TextController : WebApiControllerBase
     {
         private readonly ITextProcessingServiceFactory _textProcessingServiceFactory;        

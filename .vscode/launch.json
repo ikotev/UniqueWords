@@ -11,7 +11,7 @@
             "preLaunchTask": "build",
             "requireExactSource": false,
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/WebApp/bin/Debug/netcoreapp2.2/WebApp.dll",
+            "program": "${workspaceFolder}/WebApp/bin/Debug/netcoreapp3.1/WebApp.dll",
             "args": [],
             "cwd": "${workspaceFolder}/WebApp",
             "stopAtEntry": false,

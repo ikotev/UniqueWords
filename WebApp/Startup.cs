@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Extensions.Hosting;
 using UniqueWords.Application.Extensions.DependencyInjection;
 using UniqueWords.Infrastructure.Extensions.DependencyInjection;
 using UniqueWords.WebApp.StartupConfigs;
@@ -28,15 +28,20 @@ namespace UniqueWords.WebApp
 
             services.AddCorsServices();
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers(options =>
+            {
+                // options.Filters.Add(new ProducesAttribute(MediaTypeNames.Application.Json));
+                // options.Filters.Add(new ConsumesAttribute(MediaTypeNames.Application.Json));
+            });                
 
             services.AddDependencies(Configuration);
 
+            services.AddApiVersioningServices();
+            services.AddHealthChecksServices(Configuration);
             services.AddSwaggerServices();
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -47,15 +52,22 @@ namespace UniqueWords.WebApp
                 app.UseHsts();
             }
 
-            app.UseCorsServices();
-
-            //app.UseHttpsRedirection();
-
-            app.UseSwaggerServices();
+            app.UseHttpsRedirection();
 
             app.UseExceptionHandlerMiddleware();
 
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseCorsServices();                        
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            app.UseSwaggerServices();                        
         }
     }
 }

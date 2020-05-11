@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace UniqueWords.Application.Persistence
 {
@@ -10,8 +12,8 @@ namespace UniqueWords.Application.Persistence
 
         void Rollback();
 
-        // Task CommitAsync(CancellationToken cancellationToken);
+         Task CommitAsync(CancellationToken cancellationToken);
 
-        // Task RollbackAsync(CancellationToken cancellationToken);
+         Task RollbackAsync(CancellationToken cancellationToken);
     }
 }

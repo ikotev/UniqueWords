@@ -34,7 +34,10 @@ namespace UniqueWords.Infrastructure.Persistence
 
         public void SaveChanges() => DbContext.SaveChanges();
 
-        public Task SaveChangesAsync() => DbContext.SaveChangesAsync();
+        public async Task SaveChangesAsync() 
+        {
+            await DbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
 
         #region IDispose
         private bool _disposed;

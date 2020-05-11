@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using UniqueWords.Application.Persistence;
 
@@ -10,18 +12,24 @@ namespace UniqueWords.Infrastructure.Persistence
 
         public DataContextTransaction(IDbContextTransaction transaction)
         {
-            _transaction = transaction;                        
+            _transaction = transaction;
         }
 
         public Guid TransactionId => _transaction.TransactionId;
 
-        public void Commit() => _transaction.Commit();        
+        public void Commit() => _transaction.Commit();
 
         public void Rollback() => _transaction.Rollback();
 
-        // public Task CommitAsync(CancellationToken cancellationToken) => _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+        public async Task CommitAsync(CancellationToken cancellationToken)
+        {
+            await _transaction.CommitAsync(cancellationToken).ConfigureAwait(false);
+        }
 
-        // public Task RollbackAsync(CancellationToken cancellationToken) => _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+        public async Task RollbackAsync(CancellationToken cancellationToken)
+        {
+            await _transaction.RollbackAsync(cancellationToken).ConfigureAwait(false);
+        }
 
         #region IDispose
 

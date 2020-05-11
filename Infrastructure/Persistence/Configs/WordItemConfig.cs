@@ -1,10 +1,10 @@
-﻿namespace UniqueWords.Infrastructure.Persistence.Configs
+﻿using UniqueWords.Domain.Entities;
+
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace UniqueWords.Infrastructure.Persistence.Configs
 {
-    using Domain.Entities;
-
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
     public class WordItemConfig : IEntityTypeConfiguration<WordItem>
     {
         public void Configure(EntityTypeBuilder<WordItem> builder)

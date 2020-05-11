@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
+using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
 using System.Net;
@@ -18,7 +18,7 @@ namespace UniqueWords.WebApp.StartupConfigs
         private readonly ILogger<ExceptionHandlerMiddleware> _logger;
 
         private HttpContext _httpContext;
-        private IHostingEnvironment _env;
+        private IWebHostEnvironment _env;
 
         public ExceptionHandlerMiddleware(RequestDelegate next, ILogger<ExceptionHandlerMiddleware> logger)
         {
@@ -26,7 +26,7 @@ namespace UniqueWords.WebApp.StartupConfigs
             _logger = logger;
         }
 
-        public async Task Invoke(HttpContext httpContext, IHostingEnvironment env)
+        public async Task Invoke(HttpContext httpContext, IWebHostEnvironment env)
         {
             try
             {

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using UniqueWords.Application.TextProcessing;
 using UniqueWords.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +7,7 @@ using System.Threading.Tasks;
 using UniqueWords.Application.Models;
 using UniqueWords.Domain.Entities;
 using System.Linq;
+using Microsoft.Data.SqlClient;
 
 namespace UniqueWords.Infrastructure.TextProcessing
 {
@@ -38,7 +38,7 @@ namespace UniqueWords.Infrastructure.TextProcessing
             parameter.TypeName = "[dbo].[AddNewWordsInput]";
 
             var response = await _dbContext.AddNewWords
-                .FromSql("EXEC dbo.AddNewWords @Words", parameter)
+                .FromSqlRaw("EXEC dbo.AddNewWords @Words", parameter)
                 .ToListAsync();
 
             return response;
