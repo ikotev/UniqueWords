@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using UniqueWords.Application.WordsWorkQueue;
+using UniqueWords.Application.WordsAdding;
 using UniqueWords.WebApp.BackgroundServices;
 
 namespace UniqueWords.WebApp.StartupConfigs

@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using UniqueWords.Application.TextProcessing;
+using UniqueWords.Application.WordsAdding;
 using UniqueWords.Infrastructure.Persistence;
 using UniqueWords.Infrastructure.TextProcessing;
+using UniqueWords.Infrastructure.WordsAdding;
 
 namespace UniqueWords.Infrastructure.Extensions.DependencyInjection
 {
@@ -20,7 +22,8 @@ namespace UniqueWords.Infrastructure.Extensions.DependencyInjection
                 ServiceLifetime.Singleton)
 
                 .AddSingleton<IDbContextFactory<UniqueWordsDbContext>, UniqueWordsDbContextFactory>()
-                .AddSingleton<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>();
+                .AddSingleton<ITextProcessingDataContextFactory, TextProcessingDataContextFactory>()
+                .AddSingleton<IWordsAddingDataContextFactory, WordsAddingDataContextFactory>();
 
             return services;
         }

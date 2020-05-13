@@ -9,7 +9,7 @@ using UniqueWords.Domain.Entities;
 using System.Linq;
 using Microsoft.Data.SqlClient;
 
-namespace UniqueWords.Infrastructure.TextProcessing
+namespace UniqueWords.Infrastructure.Respositories
 {
     public class WordsRepository : IWordsRepository
     {

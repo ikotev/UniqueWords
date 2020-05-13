@@ -10,14 +10,14 @@ namespace UniqueWords.WebApp.BackgroundServices
     public class WorkQueueConsumerBackgroundService<T> : BackgroundService
     {
         private readonly IWorkQueueConsumer<T> _workQueueConsumer;
-        private readonly IEnumerable<IWorkItemHandler<T>> _workItemHndlers;
+        private readonly IEnumerable<IWorkItemHandler<T>> _workItemHandlers;
 
         public WorkQueueConsumerBackgroundService(
             IWorkQueueConsumer<T> workQueueConsumer,
-            IEnumerable<IWorkItemHandler<T>> workItemHndlers)
+            IEnumerable<IWorkItemHandler<T>> workItemHandlers)
         {
             _workQueueConsumer = workQueueConsumer;
-            _workItemHndlers = workItemHndlers;
+            _workItemHandlers = workItemHandlers;
         }
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -25,8 +25,8 @@ namespace UniqueWords.WebApp.BackgroundServices
             while (!cancellationToken.IsCancellationRequested)
             {
                 var workItem = await _workQueueConsumer.ConsumeAsync(cancellationToken);
-                var handlers = _workItemHndlers.Select(h => h.HandleAsync(workItem));
-                await Task.WhenAll(handlers);                
+                var handlerTasks = _workItemHandlers.Select(h => h.HandleAsync(workItem));
+                await Task.WhenAll(handlerTasks);                
             }
         }
     }

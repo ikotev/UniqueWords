@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace UniqueWords.Application.WordsWorkQueue
+namespace UniqueWords.Application.WordsAdding
 {
     public class WordsWorkQueueItem
     {

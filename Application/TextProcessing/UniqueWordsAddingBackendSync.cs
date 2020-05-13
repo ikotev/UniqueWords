@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UniqueWords.Application.WordsWorkQueue;
+using UniqueWords.Application.WordsAdding;
 using UniqueWords.Application.WorkQueue;
 
 namespace UniqueWords.Application.TextProcessing

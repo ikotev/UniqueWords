@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using UniqueWords.Application.WordsAdding;
 using UniqueWords.Application.StartupConfigs;
 using UniqueWords.Application.TextProcessing;
 using UniqueWords.Application.TextProcessing.TextAnalyzers;
-using UniqueWords.Application.WordsWorkQueue;
 using UniqueWords.Application.WorkQueue;
 
 namespace UniqueWords.Application.Extensions.DependencyInjection
@@ -25,7 +25,7 @@ namespace UniqueWords.Application.Extensions.DependencyInjection
                 .AddSingleton<IWorkQueueConsumer<WordsWorkQueueItem>>(provider =>
                     provider.GetService<WorkQueue<WordsWorkQueueItem>>())
 
-                .AddSingleton<IWorkItemHandler<WordsWorkQueueItem>, WordsWorkQueueItemHandler>();
+                .AddSingleton<IWorkItemHandler<WordsWorkQueueItem>, WordsAddingService>();
 
             return services;
         }
