@@ -22,6 +22,26 @@ namespace UniqueWords.Infrastructure.Respositories
 
         public async Task<List<AddNewWordsOutput>> TryAddNewWordsAsync(List<string> words)
         {
+            return await TryAddNewWordsAsync("dbo.AddNewWords", words).ConfigureAwait(false);            
+        }
+
+        public async Task<List<AddNewWordsOutput>> TryAddNewWordsWithNoSyncAsync(List<string> words)
+        {
+            return await TryAddNewWordsAsync("dbo.AddNewWordsWithNoSync", words).ConfigureAwait(false);          
+        }
+
+        public async Task<List<AddNewWordsOutput>> TryAddNewWordsAsync(string procedureName, List<string> words)
+        {
+            var parameter = CreateAddNewWordsInputParameter(words);
+            var response = await _dbContext.AddNewWords
+                .FromSqlRaw($"EXEC {procedureName} @Words", parameter)
+                .ToListAsync();
+
+            return response;
+        }
+
+        private SqlParameter CreateAddNewWordsInputParameter(List<string> words)
+        {
             var table = new DataTable();
             table.Columns.Add("RowId", typeof(int));
             table.Columns.Add("Word", typeof(string));
@@ -37,15 +57,11 @@ namespace UniqueWords.Infrastructure.Respositories
             parameter.Value = table;
             parameter.TypeName = "[dbo].[AddNewWordsInput]";
 
-            var response = await _dbContext.AddNewWords
-                .FromSqlRaw("EXEC dbo.AddNewWords @Words", parameter)
-                .ToListAsync();
-
-            return response;
+            return parameter;
         }
 
         public async Task AddWordsAsync(List<WordItem> words)
-        {            
+        {
             await _dbContext.Words.AddRangeAsync(words);
         }
 

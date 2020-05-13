@@ -9,6 +9,8 @@ namespace UniqueWords.Application.TextProcessing
     {        
         Task<List<AddNewWordsOutput>> TryAddNewWordsAsync(List<string> words);   
 
+        Task<List<AddNewWordsOutput>> TryAddNewWordsWithNoSyncAsync(List<string> words);
+        
         Task AddWordsAsync(List<WordItem> words);
 
         Task<List<WordItem>> FindAsync(List<string> words);
