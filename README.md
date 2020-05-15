@@ -10,7 +10,7 @@ Two strategies are implemented:
 * ASP .NET Core 3.1
 * Entity Framework Core 3.1
 
-# Other things you can find in the project
+### Other things you can find in the project
 * The project is implemented following the principles of Clean Architecture
 * Repository Pattern
 * ASP.NET CORE template
